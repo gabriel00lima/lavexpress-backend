@@ -1,43 +1,22 @@
-# Arquivo: laveexpress-backend/src/main/resources/application-prod.yml
-# Este arquivo é usado quando SPRING_PROFILES_ACTIVE=prod
-
 server:
-  # Render usa a variável PORT para definir a porta
   port: ${PORT:8080}
 
 spring:
   datasource:
-    # URL do banco será fornecida pelo Render via variável de ambiente
     url: ${DATABASE_URL}
     driver-class-name: org.postgresql.Driver
-    # Não precisamos definir username/password pois estão na DATABASE_URL
-
   jpa:
-    # PostgreSQL é detectado automaticamente
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
-      # update cria as tabelas automaticamente se não existirem
       ddl-auto: update
-    # Em produção, não mostrar SQL para performance
     show-sql: false
-    properties:
-      hibernate:
-        # Não formatar SQL em produção
-        format_sql: false
 
-# Configurações JWT
 jwt:
   secret: ${JWT_SECRET}
-  expiration: 864000000  # 10 dias
+  expiration: 864000000
 
-# Configurações de logging para produção
 logging:
   level:
-    # Menos logs em produção
     com.lavexpress: INFO
     org.springframework.security: WARN
     org.hibernate: WARN
-
-  # Configuração de padrão de log
-  pattern:
-    console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"
