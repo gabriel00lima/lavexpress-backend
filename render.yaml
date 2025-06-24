@@ -16,6 +16,7 @@ services:
         fromDatabase:
           name: lavexpress-db
           property: connectionString
+    healthCheckPath: /actuator/health
 
 databases:
   - name: lavexpress-db

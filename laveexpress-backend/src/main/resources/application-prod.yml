@@ -2,14 +2,19 @@ server:
   port: ${PORT:8080}
 
 spring:
-  datasource:
-    url: ${DATABASE_URL}
-    driver-class-name: org.postgresql.Driver
+  # DataSource será configurado pela classe DatabaseConfig
   jpa:
-    database-platform: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
       ddl-auto: update
     show-sql: false
+    properties:
+      hibernate:
+        format_sql: false
+        use_sql_comments: false
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+  sql:
+    init:
+      mode: never
 
 jwt:
   secret: ${JWT_SECRET}
@@ -20,3 +25,15 @@ logging:
     com.lavexpress: INFO
     org.springframework.security: WARN
     org.hibernate: WARN
+    org.springframework.web: WARN
+    org.springframework.boot.autoconfigure: WARN
+    root: WARN
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      show-details: when_authorized
