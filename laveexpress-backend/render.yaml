@@ -1,0 +1,31 @@
+# Arquivo: render.yaml (na RAIZ do projeto)
+# Este arquivo configura automaticamente os serviços no Render
+
+services:
+  # Serviço Web (sua API Spring Boot)
+  - type: web
+    name: lavexpress-api                    # Nome do serviço
+    env: docker                             # Usar Docker
+    dockerfilePath: ./laveexpress-backend/Dockerfile    # Caminho do Dockerfile
+    dockerContext: ./laveexpress-backend               # Contexto do build
+    plan: free                              # Plano gratuito
+
+    # TODAS as variáveis de ambiente em uma única seção
+    envVars:
+      - key: SPRING_PROFILES_ACTIVE
+        value: prod
+      - key: JWT_SECRET
+        value: LavExpressTCC2024JwtSecretKeyAutenticacaoSistemaAgendamentoLavajatoSeguroComMaisDe64Caracteres
+      - key: PORT
+        value: "8080"
+      - key: DATABASE_URL
+        fromDatabase:
+          name: lavexpress-db              # Nome do banco (definido abaixo)
+          property: connectionString       # Pega a string de conexão completa
+
+# Configuração do banco PostgreSQL
+databases:
+  - name: lavexpress-db                    # Nome do banco
+    databaseName: lavexpressdb             # Nome do database dentro do PostgreSQL
+    user: lavexpress_user                  # Usuário do banco
+    plan: free                             # Plano gratuito
