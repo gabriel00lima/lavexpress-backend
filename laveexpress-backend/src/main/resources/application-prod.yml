@@ -2,7 +2,17 @@ server:
   port: ${PORT:8080}
 
 spring:
-  # DataSource será configurado pela classe DatabaseConfig
+  datasource:
+    url: jdbc:postgresql://dpg-d1di6vp5pdvs73ajeh8g-a.oregon-postgres.render.com:5432/lavexpressdb
+    username: lavexpressdb_user
+    password: VzbX5BEBFEPPWRlr26bEG6SwVJZpU1Ex
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 5
+      minimum-idle: 1
+      connection-timeout: 30000
+      idle-timeout: 600000
+      max-lifetime: 1800000
   jpa:
     hibernate:
       ddl-auto: update
@@ -10,11 +20,6 @@ spring:
     properties:
       hibernate:
         format_sql: false
-        use_sql_comments: false
-        dialect: org.hibernate.dialect.PostgreSQLDialect
-  sql:
-    init:
-      mode: never
 
 jwt:
   secret: ${JWT_SECRET}
@@ -25,8 +30,6 @@ logging:
     com.lavexpress: INFO
     org.springframework.security: WARN
     org.hibernate: WARN
-    org.springframework.web: WARN
-    org.springframework.boot.autoconfigure: WARN
     root: WARN
 
 management:
@@ -34,6 +37,3 @@ management:
     web:
       exposure:
         include: health
-  endpoint:
-    health:
-      show-details: when_authorized

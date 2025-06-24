@@ -1,6 +1,11 @@
 package com.lavexpress.laveexpress.config;
 
-import org.springframework.boot.context.properties.ConfigurationProperties;
+// ARQUIVO COMENTADO - usando configuração manual no application-prod.yml
+// Depois que funcionar, pode descomentar e usar esta classe
+
+/*
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,18 +20,37 @@ import java.net.URISyntaxException;
 @Profile("prod")
 public class DatabaseConfig {
 
+    private static final Logger log = LoggerFactory.getLogger(DatabaseConfig.class);
+
     @Bean
     @Primary
     public DataSource dataSource() {
         String databaseUrl = System.getenv("DATABASE_URL");
 
-        if (databaseUrl != null && databaseUrl.startsWith("postgresql://")) {
+        if (databaseUrl == null || databaseUrl.trim().isEmpty()) {
+            throw new RuntimeException("DATABASE_URL environment variable is required");
+        }
+
+        if (databaseUrl.startsWith("postgresql://")) {
             try {
                 URI uri = new URI(databaseUrl);
 
-                String jdbcUrl = "jdbc:postgresql://" + uri.getHost() + ":" + uri.getPort() + uri.getPath();
-                String username = uri.getUserInfo().split(":")[0];
-                String password = uri.getUserInfo().split(":")[1];
+                String host = uri.getHost();
+                int port = uri.getPort() == -1 ? 5432 : uri.getPort();
+                String path = uri.getPath();
+                String userInfo = uri.getUserInfo();
+
+                if (userInfo == null || !userInfo.contains(":")) {
+                    throw new RuntimeException("Invalid DATABASE_URL format");
+                }
+
+                String[] credentials = userInfo.split(":", 2);
+                String username = credentials[0];
+                String password = credentials[1];
+
+                String jdbcUrl = "jdbc:postgresql://" + host + ":" + port + path;
+
+                log.info("Connecting to database at {}:{}", host, port);
 
                 return DataSourceBuilder
                         .create()
@@ -37,14 +61,14 @@ public class DatabaseConfig {
                         .build();
 
             } catch (URISyntaxException e) {
-                throw new RuntimeException("Erro ao parsear DATABASE_URL", e);
+                throw new RuntimeException("Error parsing DATABASE_URL", e);
             }
         }
 
-        // Fallback para configuração padrão
         return DataSourceBuilder
                 .create()
-                .url(System.getenv("DATABASE_URL"))
+                .url(databaseUrl.startsWith("jdbc:") ? databaseUrl : "jdbc:" + databaseUrl)
                 .build();
     }
 }
+*/
